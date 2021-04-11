@@ -10,7 +10,7 @@ class LoginScreen extends React.Component {
         <Text>Login Screen ta banate hbe bhulle hbe na</Text>
         <Button
           title="Cholo jai group list e"
-          onPress={() => this.props.navigation.navigate('groupList')}
+          onPress={() => this.props.navigation.navigate('groupTabs')}
         />
       </View>
     );
