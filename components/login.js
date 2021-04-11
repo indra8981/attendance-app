@@ -29,13 +29,16 @@ class LoginScreen extends React.Component {
   }
   async onLogin() {
     axios
-      .post('http://127.0.0.1:8000/users/login', this.state)
+      .post('https://70cb9b8d4c60.ngrok.io/users/login', this.state)
       .then(async res => {
         console.log(res);
         if (res.status === 200) {
-          await AsyncStorage.setItem('loggedIn', res.data);
+          await AsyncStorage.setItem('loggedIn', JSON.stringify(res.data));
           this.props.navigation.navigate('groupTabs');
         }
+      })
+      .catch(err => {
+        Alert.alert('Please Enter correct email and password');
       });
   }
   render() {
