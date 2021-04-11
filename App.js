@@ -4,7 +4,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './components/login';
 import GroupTabs from './components/groupTabs';
-
+import axios from 'axios';
+axios.defaults.baseURL = 'http://localhost:8000';
 class App extends React.Component {
   render() {
     const Stack = createStackNavigator();
