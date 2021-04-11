@@ -5,6 +5,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Button,
+  Icon,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 class GroupListScreen extends React.Component {
@@ -33,14 +35,25 @@ class GroupListScreen extends React.Component {
           type: 'classroom',
         },
       ],
+      renderCreateButton: false
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
     // axios.get("").then(res=>{
     //   this.setState({groups: res.data});
     // })
     global.ID = 5;
+    var value = await AsyncStorage.getItem('loggedIn');
+    value = JSON.parse(value);
+    if (value['type'] < 2){
+      this.setState({renderCreateButton: true});
+    }
   }
+
+  buttonClickedHandler() {
+    this.props.navigation.navigate('groupCreate');
+  }
+
 
   renderList() {
     var lists = [];
@@ -66,14 +79,53 @@ class GroupListScreen extends React.Component {
     }
     return lists;
   }
+  
 
   render() {
     return (
       <View style={{flex: 1}}>
         <ScrollView>{this.renderList()}</ScrollView>
+        <TouchableOpacity
+          onPress={this.buttonClickedHandler}
+          style={styles.roundButton}>
+          <View
+            style={styles.bar1}
+          />
+          <View
+            style={styles.bar2}
+          />
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
 export default GroupListScreen;
+
+const styles = StyleSheet.create({
+  roundButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 100,
+    backgroundColor: 'orange',
+    position: 'absolute',
+    right: 20,
+    bottom: 40
+  },
+  bar1: {
+    width: "100%",
+    height: 5,
+    backgroundColor: 'black',
+    position: 'absolute',
+    borderRadius: 10
+  },
+  bar2: {
+    width: 5,
+    height: "100%",
+    backgroundColor: 'black',
+    borderRadius: 10
+  }
+});
