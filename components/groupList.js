@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 class GroupListScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -48,7 +49,9 @@ class GroupListScreen extends React.Component {
       if (this.props.type != grp.type) continue;
       const component = (
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('chat')}
+          onPress={async () => {
+            await AsyncStorage.removeItem('loggedIn');
+          }}
           style={{
             borderBottomColor: 'grey',
             borderBottomWidth: 0.2,
