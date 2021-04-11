@@ -1,14 +1,18 @@
 import React from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
+import {Alert, View, Text, Button} from 'react-native';
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
   }
   componentDidMount() {
-    // axios.get("").then(res=>{
-    //   this.setState({groups: res.data});
-    // })
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      Alert.alert('Refreshed');
+    });
     console.log('login', global.ID);
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
   render() {
     return (
