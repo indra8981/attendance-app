@@ -123,10 +123,10 @@ class GroupListScreen extends React.Component {
       const grp = this.state.groups[i];
       const component = (
         <TouchableOpacity
-          onPress={() => this.navigation.navigate('chat')}
+          onPress={() => this.props.navigation.navigate('chat')}
           style={{
-            borderBottomColor: 'black',
-            borderBottomWidth: 1,
+            borderBottomColor: 'grey',
+            borderBottomWidth: 0.2,
             width: '100%',
             height: 50,
             backgroundColor: 'white',

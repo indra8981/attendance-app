@@ -4,6 +4,12 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
   }
+  componentDidMount() {
+    // axios.get("").then(res=>{
+    //   this.setState({groups: res.data});
+    // })
+    console.log('login', global.ID);
+  }
   render() {
     return (
       <View>
