@@ -2,7 +2,6 @@ import React from 'react';
 import {StyleSheet, View, Text, Button} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import GroupListScreen from './groupList';
-import ClassListScreen from './classroomList';
 class GroupTabs extends React.Component {
   constructor(props) {
     super(props);
@@ -11,8 +10,14 @@ class GroupTabs extends React.Component {
     const Tab = createMaterialTopTabNavigator();
     return (
       <Tab.Navigator>
-        <Tab.Screen name="groupList" component={GroupListScreen} />
-        <Tab.Screen name="classList" component={ClassListScreen} />
+        <Tab.Screen
+          name="groupList"
+          children={() => <GroupListScreen type={'group'} />}
+        />
+        <Tab.Screen
+          name="classList"
+          children={() => <GroupListScreen type={'classroom'} />}
+        />
       </Tab.Navigator>
     );
   }

@@ -14,98 +14,22 @@ class GroupListScreen extends React.Component {
         {
           id: 1,
           name: 'Group 1',
+          type: 'group',
         },
         {
           id: 2,
           name: 'Group 2',
+          type: 'classroom',
         },
         {
           id: 3,
           name: 'Group 3',
+          type: 'group',
         },
         {
           id: 4,
           name: 'Group 4',
-        },
-        {
-          id: 1,
-          name: 'Group 1',
-        },
-        {
-          id: 2,
-          name: 'Group 2',
-        },
-        {
-          id: 3,
-          name: 'Group 3',
-        },
-        {
-          id: 4,
-          name: 'Group 4',
-        },
-        {
-          id: 1,
-          name: 'Group 1',
-        },
-        {
-          id: 2,
-          name: 'Group 2',
-        },
-        {
-          id: 3,
-          name: 'Group 3',
-        },
-        {
-          id: 4,
-          name: 'Group 4',
-        },
-        {
-          id: 1,
-          name: 'Group 1',
-        },
-        {
-          id: 2,
-          name: 'Group 2',
-        },
-        {
-          id: 3,
-          name: 'Group 3',
-        },
-        {
-          id: 4,
-          name: 'Group 4',
-        },
-        {
-          id: 1,
-          name: 'Group 1',
-        },
-        {
-          id: 2,
-          name: 'Group 2',
-        },
-        {
-          id: 3,
-          name: 'Group 3',
-        },
-        {
-          id: 4,
-          name: 'Group 4',
-        },
-        {
-          id: 1,
-          name: 'Group 1',
-        },
-        {
-          id: 2,
-          name: 'Group 2',
-        },
-        {
-          id: 3,
-          name: 'Group 3',
-        },
-        {
-          id: 4,
-          name: 'Group 4',
+          type: 'classroom',
         },
       ],
     };
@@ -121,6 +45,7 @@ class GroupListScreen extends React.Component {
     var lists = [];
     for (var i = 0; i < this.state.groups.length; i++) {
       const grp = this.state.groups[i];
+      if (this.props.type != grp.type) continue;
       const component = (
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('chat')}

@@ -44,6 +44,7 @@ class ClassRoomList extends React.Component {
       const component = (
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('login')}
+          key={grp.id}
           style={{
             borderBottomColor: 'grey',
             borderBottomWidth: 0.2,
@@ -61,7 +62,7 @@ class ClassRoomList extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
         <ScrollView>{this.renderList()}</ScrollView>
       </View>
     );
