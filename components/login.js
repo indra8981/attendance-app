@@ -29,7 +29,7 @@ class LoginScreen extends React.Component {
   }
   async onLogin() {
     axios
-      .post('https://0a2670366076.ngrok.io/users/login', this.state)
+      .post('http://192.168.31.61:8000/users/login', this.state)
       .then(async res => {
         console.log(res);
         if (res.status === 200) {
