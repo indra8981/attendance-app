@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, Button, TextInput, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
+import axios from '../axios';
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
