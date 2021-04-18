@@ -18,6 +18,7 @@ class App extends React.Component {
           <Stack.Screen name="login" component={LoginScreen} />
           <Stack.Screen name="groupTabs" component={GroupTabs} />
           <Stack.Screen name="groupCreate" component={GroupCreate} />
+          <Stack.Screen name="chatScreen" component={chatScreen} options={{ title: 'My home' }}/>
         </Stack.Navigator>
       </NavigationContainer>
     );
