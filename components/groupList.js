@@ -9,8 +9,6 @@ import {
   Icon,
 } from 'react-native';
 import axios from './axios';
-
-
 import AsyncStorage from '@react-native-community/async-storage';
 import chatScreen from './chatScreen';
 
