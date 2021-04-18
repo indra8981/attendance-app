@@ -9,6 +9,8 @@ import {
   Icon,
 } from 'react-native';
 import axios from './axios';
+import Geolocation from '@react-native-community/geolocation';
+
 import AsyncStorage from '@react-native-community/async-storage';
 class GroupListScreen extends React.Component {
   constructor(props) {
@@ -19,13 +21,20 @@ class GroupListScreen extends React.Component {
     };
   }
   async componentDidMount() {
+    Geolocation.getCurrentPosition(info => console.log(info));
+    Geolocation.watchPosition(
+      info => console.log('watch', info),
+      () => {},
+      {
+        enableHighAccuracy: true,
+      },
+    );
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
     axios
       .get(`/group/listGroup?userId=${userId}`)
       .then(res => {
-        console.log('axios', res.data.data);
         this.setState({groups: res.data.data});
       })
       .catch(err => {
