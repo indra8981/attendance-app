@@ -14,27 +14,25 @@ class GroupListScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      groups: [
-        {
-          "Id": 1,
-          "groupName": "test_group",
-          "groupType": 0,
-        },
-      ],
-      renderCreateButton: false
+      groups: [],
+      renderCreateButton: false,
     };
   }
   async componentDidMount() {
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
-    console.log(userId);
-    axios.get(`/group/listGroup?userId=${userId}`).then(res=>{
-      console.log(res.data)
-      this.setState({groups: res.data});
-    }).catch(err => {console.log(err)})
+    axios
+      .get(`/group/listGroup?userId=${userId}`)
+      .then(res => {
+        console.log('axios', res.data.data);
+        this.setState({groups: res.data.data});
+      })
+      .catch(err => {
+        console.log(err);
+      });
     global.ID = 5;
-    if (value['userType'] < 2){
+    if (value['userType'] < 2) {
       this.setState({renderCreateButton: true});
     }
   }
@@ -43,18 +41,17 @@ class GroupListScreen extends React.Component {
     this.props.navigation.navigate('groupCreate');
   }
 
-
   renderList() {
     var lists = [];
     for (var i = 0; i < this.state.groups.length; i++) {
       const grp = this.state.groups[i];
       if (this.props.type != grp.groupType) continue;
-      console.log("Inside: ", grp);
       const component = (
         <TouchableOpacity
           onPress={async () => {
             await AsyncStorage.removeItem('loggedIn');
           }}
+          key={grp.Id}
           style={{
             borderBottomColor: 'grey',
             borderBottomWidth: 0.2,
@@ -66,25 +63,19 @@ class GroupListScreen extends React.Component {
         </TouchableOpacity>
       );
       lists.push(component);
-      console.log(lists);
     }
     return lists;
   }
-  
 
   render() {
     return (
       <View style={{flex: 1}}>
         <ScrollView>{this.renderList()}</ScrollView>
         <TouchableOpacity
-          onPress={this.buttonClickedHandler}
+          onPress={() => this.buttonClickedHandler()}
           style={styles.roundButton}>
-          <View
-            style={styles.bar1}
-          />
-          <View
-            style={styles.bar2}
-          />
+          <View style={styles.bar1} />
+          <View style={styles.bar2} />
         </TouchableOpacity>
       </View>
     );
@@ -104,19 +95,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'orange',
     position: 'absolute',
     right: 20,
-    bottom: 40
+    bottom: 40,
   },
   bar1: {
-    width: "100%",
+    width: '100%',
     height: 5,
     backgroundColor: 'black',
     position: 'absolute',
-    borderRadius: 10
+    borderRadius: 10,
   },
   bar2: {
     width: 5,
-    height: "100%",
+    height: '100%',
     backgroundColor: 'black',
-    borderRadius: 10
-  }
+    borderRadius: 10,
+  },
 });
