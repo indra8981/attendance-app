@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import axios from './axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import chatScreen from './chatScreen';
 
 class GroupListScreen extends React.Component {
   constructor(props) {
@@ -49,7 +50,8 @@ class GroupListScreen extends React.Component {
       const component = (
         <TouchableOpacity
           onPress={async () => {
-            await AsyncStorage.removeItem('loggedIn');
+            this.props.navigation.navigate('chatScreen'); //go to chatScreen.js
+            //await AsyncStorage.removeItem('loggedIn');
           }}
           key={grp.Id}
           style={{
