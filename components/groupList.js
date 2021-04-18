@@ -8,6 +8,7 @@ import {
   Button,
   Icon,
 } from 'react-native';
+import axios from './axios';
 import AsyncStorage from '@react-native-community/async-storage';
 class GroupListScreen extends React.Component {
   constructor(props) {
@@ -15,37 +16,25 @@ class GroupListScreen extends React.Component {
     this.state = {
       groups: [
         {
-          id: 1,
-          name: 'Group 1',
-          type: 'group',
-        },
-        {
-          id: 2,
-          name: 'Group 2',
-          type: 'classroom',
-        },
-        {
-          id: 3,
-          name: 'Group 3',
-          type: 'group',
-        },
-        {
-          id: 4,
-          name: 'Group 4',
-          type: 'classroom',
+          "Id": 1,
+          "groupName": "test_group",
+          "groupType": 0,
         },
       ],
       renderCreateButton: false
     };
   }
   async componentDidMount() {
-    // axios.get("").then(res=>{
-    //   this.setState({groups: res.data});
-    // })
-    global.ID = 5;
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
-    if (value['type'] < 2){
+    const userId = value['email'];
+    console.log(userId);
+    axios.get(`/group/listGroup?userId=${userId}`).then(res=>{
+      console.log(res.data)
+      this.setState({groups: res.data});
+    }).catch(err => {console.log(err)})
+    global.ID = 5;
+    if (value['userType'] < 2){
       this.setState({renderCreateButton: true});
     }
   }
@@ -59,7 +48,8 @@ class GroupListScreen extends React.Component {
     var lists = [];
     for (var i = 0; i < this.state.groups.length; i++) {
       const grp = this.state.groups[i];
-      if (this.props.type != grp.type) continue;
+      if (this.props.type != grp.groupType) continue;
+      console.log("Inside: ", grp);
       const component = (
         <TouchableOpacity
           onPress={async () => {
@@ -72,10 +62,11 @@ class GroupListScreen extends React.Component {
             height: 50,
             backgroundColor: 'white',
           }}>
-          <Text>{grp.name}</Text>
+          <Text>{grp.groupName}</Text>
         </TouchableOpacity>
       );
       lists.push(component);
+      console.log(lists);
     }
     return lists;
   }

@@ -12,11 +12,11 @@ class GroupTabs extends React.Component {
       <Tab.Navigator>
         <Tab.Screen
           name="groupList"
-          children={() => <GroupListScreen type={'group'} />}
+          children={() => <GroupListScreen {...this.props} type={0} />}
         />
         <Tab.Screen
           name="classList"
-          children={() => <GroupListScreen type={'classroom'} />}
+          children={() => <GroupListScreen {...this.props} type={1} />}
         />
       </Tab.Navigator>
     );

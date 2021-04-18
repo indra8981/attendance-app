@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, Button, TextInput, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from '../axios';
+import axios from './axios';
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -29,7 +29,7 @@ class LoginScreen extends React.Component {
   }
   async onLogin() {
     axios
-      .post('http://192.168.31.61:8000/users/login', this.state)
+      .post('/users/login', this.state)
       .then(async res => {
         console.log(res);
         if (res.status === 200) {
