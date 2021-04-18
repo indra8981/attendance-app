@@ -9,9 +9,8 @@ import {
   Icon,
 } from 'react-native';
 import axios from './axios';
-
-
 import AsyncStorage from '@react-native-community/async-storage';
+
 class GroupListScreen extends React.Component {
   constructor(props) {
     super(props);
