@@ -2,6 +2,8 @@ import React from 'react';
 import {StyleSheet, View, Text, Button, TextInput, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from './axios';
+import Geolocation from '@react-native-community/geolocation';
+
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -11,6 +13,7 @@ class LoginScreen extends React.Component {
     };
   }
   async componentDidMount() {
+    
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
       const value = await AsyncStorage.getItem('loggedIn');
       if (value) {
@@ -34,6 +37,26 @@ class LoginScreen extends React.Component {
         console.log(res);
         if (res.status === 200) {
           await AsyncStorage.setItem('loggedIn', JSON.stringify(res.data));
+          Geolocation.watchPosition(
+            info => {
+              const geolocationInstance = {
+                userEmail: res.data.email,
+                latitude: info.coords.latitude,
+                longitude: info.coords.longitude,
+                timestamp: info.timestamp
+              }
+              axios.post('/users/updateLocation', geolocationInstance).then(response => {
+                console.log("Hola", response)
+              })
+            },
+            err => {
+              console.log(err);
+            },
+            {
+              enableHighAccuracy: true,
+              distanceFilter: 4
+            },
+          );
           this.props.navigation.navigate('groupTabs');
         }
       })

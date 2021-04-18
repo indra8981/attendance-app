@@ -9,6 +9,8 @@ import {
   Icon,
 } from 'react-native';
 import axios from './axios';
+
+
 import AsyncStorage from '@react-native-community/async-storage';
 class GroupListScreen extends React.Component {
   constructor(props) {
@@ -25,7 +27,6 @@ class GroupListScreen extends React.Component {
     axios
       .get(`/group/listGroup?userId=${userId}`)
       .then(res => {
-        console.log('axios', res.data.data);
         this.setState({groups: res.data.data});
       })
       .catch(err => {
