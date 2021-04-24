@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TextInput, Button} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from './axios'
+import axios from './axios';
 class GroupCreateScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -25,14 +25,14 @@ class GroupCreateScreen extends React.Component {
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
-    console.log(this.state)
+    console.log(this.state);
     const group = {
       groupName: this.state.groupName,
       groupType: this.state.groupType,
       createdByUser: userId,
       additionalInfo: this.state.additionalInfo,
     };
-    console.log(group)
+    console.log(group);
     var groupId = -1;
     await axios.post('/group/createGroup', group).then(response => {
       console.log(response.data);
@@ -41,8 +41,8 @@ class GroupCreateScreen extends React.Component {
     });
     const inviteUsers = {
       emails: this.state.invitedEmails,
-      groupId: groupId
-    }
+      groupId: groupId,
+    };
     await axios.post('/group/inviteUsers', inviteUsers).then(response => {
       console.log(response.data);
     });
@@ -83,7 +83,12 @@ class GroupCreateScreen extends React.Component {
             onChangeText={additionalInfo => this.setState({additionalInfo})}
             value={this.state.additionalInfo}
           />
-          <Button title="Create" onPress={() => {this.handleSubmit()}} />
+          <Button
+            title="Create"
+            onPress={() => {
+              this.handleSubmit();
+            }}
+          />
         </View>
       </View>
     );
