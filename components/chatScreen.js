@@ -1,6 +1,20 @@
 import React from 'react';
-import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
-import {StyleSheet, View, Text, Button, TextInput, Alert} from 'react-native';
+import {
+  GiftedChat,
+  InputToolbar,
+  MessageText,
+  Bubble,
+} from 'react-native-gifted-chat';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
+import uuid from 'uuid';
 class chatScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -8,8 +22,8 @@ class chatScreen extends React.Component {
       messages: [
         {
           _id: 1,
-          text: 'OKKK!',
           createdAt: new Date().getTime(),
+          text: 'Ok',
           user: {
             _id: 2,
             name: 'Soura Deep',
@@ -28,21 +42,61 @@ class chatScreen extends React.Component {
 
   render() {
     return (
-      <GiftedChat
-        renderInputToolbar={props => (
-          <View style={{flexDirection: 'row', flex: 1}}>
-            <View style={{flex: 1}}>
-              <InputToolbar {...props} />
+      <View style={{flex: 1}}>
+        <GiftedChat
+          renderInputToolbar={props => (
+            <View style={{flexDirection: 'row', flex: 1}}>
+              <View style={{flex: 1}}>
+                <InputToolbar {...props} />
+              </View>
+              <TouchableOpacity
+                style={{backgroundColor: 'yellow'}}
+                onPress={() =>
+                  this.handleSend([
+                    {
+                      _id: uuid.v4(),
+                      createdAt: new Date(),
+                      customView: (
+                        <View
+                          style={{
+                            width: 60,
+                            height: 60,
+                            backgroundColor: 'black',
+                          }}
+                        />
+                      ),
+                      user: {_id: 1},
+                    },
+                  ])
+                }>
+                <Text>Hola</Text>
+              </TouchableOpacity>
             </View>
-            <View>
-              <Text>Hola</Text>
-            </View>
-          </View>
-        )}
-        messages={this.state.messages}
-        onSend={newMessage => this.handleSend(newMessage)}
-        user={{_id: 1}}
-      />
+          )}
+          messages={this.state.messages}
+          onSend={newMessage => this.handleSend(newMessage)}
+          user={{_id: 1}}
+          renderCustomView={hh => {
+            console.log('custom', typeof hh.currentMessage.customView);
+            return hh.currentMessage.customView;
+          }}
+          renderBubble={hh => {
+            console.log(hh);
+            return (
+              <Bubble
+                wrapperStyle={{
+                  right: {
+                    backgroundColor: 'pink',
+                  },
+                }}
+                {...hh}
+              />
+            );
+          }}
+        />
+
+        {/* <MessageText currentMessage={{text: 'Hello'}} /> */}
+      </View>
     );
   }
 }
