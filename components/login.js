@@ -13,7 +13,6 @@ class LoginScreen extends React.Component {
     };
   }
   async componentDidMount() {
-    
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
       const value = await AsyncStorage.getItem('loggedIn');
       if (value) {
@@ -43,24 +42,27 @@ class LoginScreen extends React.Component {
                 userEmail: res.data.email,
                 latitude: info.coords.latitude,
                 longitude: info.coords.longitude,
-                timestamp: info.timestamp
-              }
-              axios.post('/users/updateLocation', geolocationInstance).then(response => {
-                console.log("Hola", response)
-              })
+                timestamp: info.timestamp,
+              };
+              axios
+                .post('/users/updateLocation', geolocationInstance)
+                .then(response => {
+                  console.log('Hola', response);
+                });
             },
             err => {
               console.log(err);
             },
             {
               enableHighAccuracy: true,
-              distanceFilter: 4
+              distanceFilter: 4,
             },
           );
           this.props.navigation.navigate('groupTabs');
         }
       })
       .catch(err => {
+        console.log(err);
         Alert.alert('Please Enter correct email and password');
       });
   }
