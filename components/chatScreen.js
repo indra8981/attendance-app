@@ -54,9 +54,25 @@ class chatScreen extends React.Component {
       name: this.props.route.params.userId,
       room: this.props.route.params.group.id,
     });
+    this.socket.on('message', message => {
+      this.addNewMessage(message);
+    });
+  }
+
+  componentWillUnmount() {
+    this.socket.emit('logout', {
+      name: this.props.route.params.userId,
+      room: this.props.route.params.group.id,
+    });
   }
 
   handleSend(newMessage = []) {
+    this.setState({
+      messages: GiftedChat.append(this.state.messages, newMessage),
+    });
+  }
+
+  addNewMessage(newMessage = []) {
     this.setState({
       messages: GiftedChat.append(this.state.messages, newMessage),
     });
