@@ -18,12 +18,14 @@ class GroupListScreen extends React.Component {
     this.state = {
       groups: [],
       renderCreateButton: false,
+      userEmail: null,
     };
   }
   async componentDidMount() {
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
+    this.setState({userEmail: userId});
     axios
       .get(`/group/listGroup?userId=${userId}`)
       .then(res => {
@@ -50,7 +52,10 @@ class GroupListScreen extends React.Component {
       const component = (
         <TouchableOpacity
           onPress={async () => {
-            this.props.navigation.navigate('chatScreen'); //go to chatScreen.js
+            this.props.navigation.navigate('chatScreen', {
+              group: grp,
+              userId: this.state.userEmail,
+            }); //go to chatScreen.js
             //await AsyncStorage.removeItem('loggedIn');
           }}
           key={grp.Id}
