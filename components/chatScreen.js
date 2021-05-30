@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import uuid from 'uuid';
-class chatScreen extends React.Component {
+class ChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -100,4 +100,4 @@ class chatScreen extends React.Component {
     );
   }
 }
-export default chatScreen;
+export default ChatScreen;

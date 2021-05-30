@@ -14,10 +14,11 @@ class GroupCreateScreen extends React.Component {
       additionalInfo: '',
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
     // axios.get("").then(res=>{
     //   this.setState({groups: res.data});
     // })
+    await AsyncStorage.removeItem('loggedIn');
     global.ID = 5;
   }
 
