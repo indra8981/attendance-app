@@ -76,8 +76,6 @@ class chatScreen extends React.Component {
 
   handleSend(newMessage = []) {
     const x = JSON.stringify(newMessage);
-    console.log(x);
-    console.log(JSON.parse(x));
     this.setState({test: JSON.parse(x)});
     this.socket.emit('sendMessage', newMessage);
     this.setState({
@@ -147,7 +145,7 @@ class chatScreen extends React.Component {
   }
 
   renderAttendanceCard(message) {
-    const createdTime = message.createdAt;
+    const createdTime = new Date(message.createdAt);
     const endTime = new Date(createdTime);
     endTime.setSeconds(createdTime.getSeconds() + this.state.timer);
     if (this.state.currentTime < endTime) {
