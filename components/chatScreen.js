@@ -29,10 +29,12 @@ class chatScreen extends React.Component {
       timer: 10,
       timerId: null,
       isActiveAttendance: false,
+      test: null,
+      currentTime: new Date(),
       messages: [
         {
           _id: 'a@a.com',
-          createdAt: new Date().getTime(),
+          createdAt: new Date(),
           text: 'Ok',
           user: {
             _id: 'a@a.com',
@@ -41,7 +43,7 @@ class chatScreen extends React.Component {
         },
       ],
     };
-    this.tick = this.tick.bind(this);
+    // this.tick = this.tick.bind(this);
     this.renderCard = this.renderCard.bind(this);
     this.createCard = this.createCard.bind(this);
     this.handleSend = this.handleSend.bind(this);
@@ -57,6 +59,12 @@ class chatScreen extends React.Component {
     this.socket.on('message', message => {
       this.addNewMessage(message);
     });
+    setInterval(() => {
+      this.setState({
+        currentTime: new Date(),
+        messages: [...this.state.messages],
+      });
+    }, 1000);
   }
 
   componentWillUnmount() {
@@ -67,6 +75,11 @@ class chatScreen extends React.Component {
   }
 
   handleSend(newMessage = []) {
+    const x = JSON.stringify(newMessage);
+    console.log(x);
+    console.log(JSON.parse(x));
+    this.setState({test: JSON.parse(x)});
+    this.socket.emit('sendMessage', newMessage);
     this.setState({
       messages: GiftedChat.append(this.state.messages, newMessage),
     });
@@ -74,38 +87,8 @@ class chatScreen extends React.Component {
 
   addNewMessage(newMessage = []) {
     this.setState({
-      messages: GiftedChat.append(this.state.messages, newMessage),
+      messages: GiftedChat.append(this.state.messages, newMessage.text),
     });
-  }
-
-  tick() {
-    if (this.state.timer == 0) {
-      const messages = this.state.messages;
-      messages.shift();
-      this.setState({timer: secondsLeft - 1, messages: messages});
-      this.updateCard(true);
-      clearInterval(this.state.timerId);
-      this.setState({
-        timer: 10,
-        isActiveAttendance: false,
-        attendanceCardId: null,
-        attendanceCardCreatedTime: null,
-      });
-      return;
-    }
-    const secondsLeft = this.state.timer;
-
-    const messages = this.state.messages;
-    messages.shift();
-    this.setState({timer: secondsLeft - 1, messages: messages});
-    this.updateCard(false);
-    console.log(this.state.timer);
-  }
-
-  getCard(id) {
-    this.setState({isActiveAttendance: true});
-    this.setState({timerId: setInterval(this.tick.bind(this), 1000)});
-    return this.renderCard(false);
   }
 
   renderCard(isFinished) {
@@ -151,23 +134,38 @@ class chatScreen extends React.Component {
       {
         _id: id,
         createdAt: createdAt,
-        customView: this.getCard(id),
+        customView: 'attendance',
         user: {_id: 'a@a.com'},
       },
     ]);
   }
 
-  updateCard(isFinished = false) {
-    const id = this.state.attendanceCardId;
-    const createdAt = this.state.attendanceCardCreatedTime;
-    this.handleSend([
-      {
-        _id: id,
-        createdAt: createdAt,
-        customView: this.renderCard(isFinished),
-        user: {_id: 'a@a.com'},
-      },
-    ]);
+  millisToMinutesAndSeconds(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+  }
+
+  renderAttendanceCard(message) {
+    const createdTime = message.createdAt;
+    const endTime = new Date(createdTime);
+    endTime.setSeconds(createdTime.getSeconds() + this.state.timer);
+    if (this.state.currentTime < endTime) {
+      const left = endTime - this.state.currentTime;
+      const time = this.millisToMinutesAndSeconds(left);
+      return (
+        <View>
+          <Text>Attendance Going On!</Text>
+          <Text>{time}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text>Attendance Finished</Text>
+        </View>
+      );
+    }
   }
 
   render() {
@@ -190,7 +188,18 @@ class chatScreen extends React.Component {
           onSend={newMessage => this.handleSend(newMessage)}
           user={{_id: 'a@a.com'}}
           renderCustomView={hh => {
-            return hh.currentMessage.customView;
+            if (hh.currentMessage.customView === 'attendance') {
+              return (
+                <View
+                  style={{
+                    width: 150,
+                    height: 100,
+                    backgroundColor: 'white',
+                  }}>
+                  {this.renderAttendanceCard(hh.currentMessage)}
+                </View>
+              );
+            }
           }}
           renderBubble={hh => {
             return (
