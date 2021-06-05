@@ -24,6 +24,7 @@ class chatScreen extends React.Component {
       transports: ['websocket', 'polling'],
     });
     this.state = {
+      user: null,
       attendanceCardId: null,
       attendanceCardCreatedTime: null,
       timer: 10,
@@ -33,7 +34,7 @@ class chatScreen extends React.Component {
       currentTime: new Date(),
       messages: [
         {
-          _id: 'a@a.com',
+          _id: '123456',
           createdAt: new Date(),
           text: 'Ok',
           user: {
@@ -52,6 +53,8 @@ class chatScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({user: this.props.route.params.userId});
+    console.log(this.props.route.params.group);
     this.socket.emit('login', {
       name: this.props.route.params.userId,
       room: this.props.route.params.group.id,
@@ -133,7 +136,7 @@ class chatScreen extends React.Component {
         _id: id,
         createdAt: createdAt,
         customView: 'attendance',
-        user: {_id: 'a@a.com'},
+        user: {_id: this.state.user},
       },
     ]);
   }
@@ -170,21 +173,26 @@ class chatScreen extends React.Component {
     return (
       <View style={{flex: 1}}>
         <GiftedChat
-          renderInputToolbar={props => (
-            <View style={{flexDirection: 'row', flex: 1}}>
-              <View style={{flex: 1}}>
-                <InputToolbar {...props} />
+          renderInputToolbar={props =>
+            this.props.route.params.group.createdByUser ===
+            this.props.route.params.userId ? (
+              <View style={{flexDirection: 'row', flex: 1}}>
+                <View style={{flex: 1}}>
+                  <InputToolbar {...props} />
+                </View>
+                <TouchableOpacity
+                  style={{backgroundColor: 'yellow'}}
+                  onPress={() => this.createCard()}>
+                  <Text>Hola</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={{backgroundColor: 'yellow'}}
-                onPress={() => this.createCard()}>
-                <Text>Hola</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+            ) : (
+              <View />
+            )
+          }
           messages={this.state.messages}
           onSend={newMessage => this.handleSend(newMessage)}
-          user={{_id: 'a@a.com'}}
+          user={{_id: this.state.user}}
           renderCustomView={hh => {
             if (hh.currentMessage.customView === 'attendance') {
               return (
