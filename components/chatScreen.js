@@ -7,6 +7,10 @@ import {
 } from 'react-native-gifted-chat';
 import Constants from './constants';
 import io from 'socket.io-client';
+import Modal from 'react-native-modal';
+
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
   StyleSheet,
   View,
@@ -15,6 +19,8 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
+  Pressable,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import uuid from 'uuid';
 class chatScreen extends React.Component {
@@ -24,6 +30,7 @@ class chatScreen extends React.Component {
       transports: ['websocket', 'polling'],
     });
     this.state = {
+      isModalVisible : false,
       user: null,
       attendanceCardId: null,
       attendanceCardCreatedTime: null,
@@ -50,6 +57,21 @@ class chatScreen extends React.Component {
     this.handleSend = this.handleSend.bind(this);
     this.getTimer = this.getTimer.bind(this);
     this.displayTime = this.displayTime.bind(this);
+  }
+
+
+  ModalTester() {
+
+    console.log("in modal")
+
+    const f = !this.state.isModalVisible
+
+    console.log(this.state.isModalVisible, f)
+  
+    this.setState({isModalVisible : f});
+
+    console.log(this.state.isModalVisible)
+
   }
 
   componentDidMount() {
@@ -169,9 +191,46 @@ class chatScreen extends React.Component {
     }
   }
 
+
   render() {
+    
     return (
       <View style={{flex: 1}}>
+
+          
+            <TouchableWithoutFeedback onPress={() => {this.setState({isModalVisible : false})}}> 
+              <Modal isVisible={this.state.isModalVisible}>
+              <View style = {{justifyContent: 'center', backgroundColor: "transparent", flex:1}} >
+                <View style = {{backgroundColor: "#ffffff", margin: 50, maxHeight: 250, padding: 40, borderRadius: 20, flex: 1}}>
+
+                    <Pressable style={styles.button} onPress={() => {this.createCard(), this.setState({isModalVisible : false})}}>
+                      <Text style={styles.text}>Start Attendance</Text>
+                    </Pressable>
+
+                    <View style = {{marginTop: 20}}>
+                      <Pressable style={styles.button}>
+                        <Text style={styles.text}>FUTURE - 1</Text>
+                      </Pressable>
+                    </View>
+
+                    <View style = {{marginTop: 20}}>
+                      <Pressable style={styles.button}>
+                        <Text style={styles.text}>FUTURE - 2</Text>
+                      </Pressable>
+                    </View>
+
+                    <View style = {{marginTop: 20}}>
+                      <Pressable style={styles.button} onPress={() => this.setState({isModalVisible : false})}> 
+                        <Text style={styles.text}>CLOSE</Text>
+                      </Pressable>
+                    </View>
+
+                </View>
+              </View>
+              </Modal>
+            </TouchableWithoutFeedback>
+          
+
         <GiftedChat
           renderInputToolbar={props =>
             this.props.route.params.group.createdByUser ===
@@ -180,11 +239,7 @@ class chatScreen extends React.Component {
                 <View style={{flex: 1}}>
                   <InputToolbar {...props} />
                 </View>
-                <TouchableOpacity
-                  style={{backgroundColor: 'yellow'}}
-                  onPress={() => this.createCard()}>
-                  <Text>Hola</Text>
-                </TouchableOpacity>
+                <Icon name="paperclip" size={45} color="#bf1313" onPress={() => this.ModalTester()}/>
               </View>
             ) : (
               <View />
@@ -226,4 +281,24 @@ class chatScreen extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 4,
+    backgroundColor: 'black',
+  },
+  text: {
+    fontSize: 10,
+    lineHeight: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
+});
+
+
 export default chatScreen;
