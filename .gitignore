@@ -58,3 +58,4 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 package-lock.json
+components/constants.js
