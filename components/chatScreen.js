@@ -23,7 +23,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import uuid from 'uuid';
-class chatScreen extends React.Component {
+class ChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.socket = io(Constants.BACKEND_ENDPOINT, {
