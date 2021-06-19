@@ -9,7 +9,7 @@ import Constants from './constants';
 import io from 'socket.io-client';
 import Modal from 'react-native-modal';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import axios from './axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -31,7 +31,7 @@ class chatScreen extends React.Component {
       transports: ['websocket', 'polling'],
     });
     this.state = {
-      isModalVisible : false,
+      isModalVisible: false,
       user: null,
       userName: null,
       attendanceCardId: null,
@@ -61,25 +61,26 @@ class chatScreen extends React.Component {
     this.displayTime = this.displayTime.bind(this);
   }
 
-
   ModalTester() {
+    const f = !this.state.isModalVisible;
 
-    console.log("in modal")
+    console.log(this.state.isModalVisible, f);
 
-    const f = !this.state.isModalVisible
+    this.setState({isModalVisible: f});
 
-    console.log(this.state.isModalVisible, f)
-  
-    this.setState({isModalVisible : f});
-
-    console.log(this.state.isModalVisible)
-
+    console.log(this.state.isModalVisible);
   }
 
   async componentDidMount() {
-    let chats = await axios.get(`/chats?groupId=${this.props.route.params.group.id}`)
-    this.setState({user: this.props.route.params.userId, userName: this.props.route.params.userName, messages: chats.data.chats});
-    console.log("Hola: ", this.state)
+    let chats = await axios.get(
+      `/chats?groupId=${this.props.route.params.group.id}`,
+    );
+    this.setState({
+      user: this.props.route.params.userId,
+      userName: this.props.route.params.userName,
+      messages: chats.data.chats,
+    });
+    console.log('Hola: ', this.state);
     console.log(this.props.route.params.group);
     this.socket.emit('login', {
       name: this.props.route.params.userId,
@@ -194,45 +195,60 @@ class chatScreen extends React.Component {
     }
   }
 
-
   render() {
-    
     return (
       <View style={{flex: 1}}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            this.setState({isModalVisible: false});
+          }}>
+          <Modal isVisible={this.state.isModalVisible}>
+            <View
+              style={{
+                justifyContent: 'center',
+                backgroundColor: 'transparent',
+                flex: 1,
+              }}>
+              <View
+                style={{
+                  backgroundColor: '#ffffff',
+                  margin: 50,
+                  maxHeight: 250,
+                  padding: 40,
+                  borderRadius: 20,
+                  flex: 1,
+                }}>
+                <Pressable
+                  style={styles.button}
+                  onPress={() => {
+                    this.createCard(), this.setState({isModalVisible: false});
+                  }}>
+                  <Text style={styles.text}>Start Attendance</Text>
+                </Pressable>
 
-          
-            <TouchableWithoutFeedback onPress={() => {this.setState({isModalVisible : false})}}> 
-              <Modal isVisible={this.state.isModalVisible}>
-              <View style = {{justifyContent: 'center', backgroundColor: "transparent", flex:1}} >
-                <View style = {{backgroundColor: "#ffffff", margin: 50, maxHeight: 250, padding: 40, borderRadius: 20, flex: 1}}>
+                <View style={{marginTop: 20}}>
+                  <Pressable style={styles.button}>
+                    <Text style={styles.text}>FUTURE - 1</Text>
+                  </Pressable>
+                </View>
 
-                    <Pressable style={styles.button} onPress={() => {this.createCard(), this.setState({isModalVisible : false})}}>
-                      <Text style={styles.text}>Start Attendance</Text>
-                    </Pressable>
+                <View style={{marginTop: 20}}>
+                  <Pressable style={styles.button}>
+                    <Text style={styles.text}>FUTURE - 2</Text>
+                  </Pressable>
+                </View>
 
-                    <View style = {{marginTop: 20}}>
-                      <Pressable style={styles.button}>
-                        <Text style={styles.text}>FUTURE - 1</Text>
-                      </Pressable>
-                    </View>
-
-                    <View style = {{marginTop: 20}}>
-                      <Pressable style={styles.button}>
-                        <Text style={styles.text}>FUTURE - 2</Text>
-                      </Pressable>
-                    </View>
-
-                    <View style = {{marginTop: 20}}>
-                      <Pressable style={styles.button} onPress={() => this.setState({isModalVisible : false})}> 
-                        <Text style={styles.text}>CLOSE</Text>
-                      </Pressable>
-                    </View>
-
+                <View style={{marginTop: 20}}>
+                  <Pressable
+                    style={styles.button}
+                    onPress={() => this.setState({isModalVisible: false})}>
+                    <Text style={styles.text}>CLOSE</Text>
+                  </Pressable>
                 </View>
               </View>
-              </Modal>
-            </TouchableWithoutFeedback>
-          
+            </View>
+          </Modal>
+        </TouchableWithoutFeedback>
 
         <GiftedChat
           renderInputToolbar={props =>
@@ -242,7 +258,12 @@ class chatScreen extends React.Component {
                 <View style={{flex: 1}}>
                   <InputToolbar {...props} />
                 </View>
-                <Icon name="paperclip" size={45} color="#bf1313" onPress={() => this.ModalTester()}/>
+                <Icon
+                  name="paperclip"
+                  size={45}
+                  color="#bf1313"
+                  onPress={() => this.ModalTester()}
+                />
               </View>
             ) : (
               <View />
@@ -273,7 +294,7 @@ class chatScreen extends React.Component {
                     backgroundColor: 'grey',
                   },
                   left: {
-                    backgroundColor: 'grey',  
+                    backgroundColor: 'grey',
                   },
                 }}
                 {...hh}
@@ -305,6 +326,5 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
-
 
 export default chatScreen;
