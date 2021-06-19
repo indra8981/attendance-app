@@ -33,6 +33,7 @@ class chatScreen extends React.Component {
     this.state = {
       isModalVisible: false,
       user: null,
+      groupType: null,
       userName: null,
       attendanceCardId: null,
       attendanceCardCreatedTime: null,
@@ -79,6 +80,7 @@ class chatScreen extends React.Component {
       user: this.props.route.params.userId,
       userName: this.props.route.params.userName,
       messages: chats.data.chats,
+      groupType: this.props.route.params.group.groupType,
     });
     console.log('Hola: ', this.state);
     console.log(this.props.route.params.group);
@@ -252,8 +254,8 @@ class chatScreen extends React.Component {
 
         <GiftedChat
           renderInputToolbar={props =>
-            this.props.route.params.group.createdByUser !=
-            this.props.route.params.userId ? (
+            this.props.route.params.group.createdByUser ===
+              this.props.route.params.userId || this.state.groupType == 0 ? (
               <View style={{flexDirection: 'row', flex: 1}}>
                 <View style={{flex: 1}}>
                   <InputToolbar {...props} />
