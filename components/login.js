@@ -12,16 +12,41 @@ class LoginScreen extends React.Component {
       password: '',
     };
   }
+  async updateLocation(value) {
+    value = JSON.parse(value);
+    Geolocation.watchPosition(
+      info => {
+        const geolocationInstance = {
+          userEmail: value.email,
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+          timestamp: info.timestamp,
+        };
+        axios
+          .post('/users/updateLocation', geolocationInstance)
+          .then(response => {});
+      },
+      err => {
+        console.log(err);
+      },
+      {
+        enableHighAccuracy: true,
+        distanceFilter: 4,
+      },
+    );
+  }
   async componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
       const value = await AsyncStorage.getItem('loggedIn');
       if (value) {
+        await this.updateLocation(value);
         this.props.navigation.navigate('groupTabs');
         return;
       }
     });
     const value = await AsyncStorage.getItem('loggedIn');
     if (value) {
+      await this.updateLocation(value);
       this.props.navigation.navigate('groupTabs');
     }
   }
