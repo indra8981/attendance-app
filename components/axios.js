@@ -1,8 +1,9 @@
 import axios from 'axios';
+import Constants from './constants';
 // Next we make an 'instance' of it
 const instance = axios.create({
   // .. where we make our configurations
-  baseURL: 'http://2150fa5a9cdb.ngrok.io',
+  baseURL: Constants.BACKEND_ENDPOINT,
 });
 
 export default instance;
