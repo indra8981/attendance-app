@@ -14,7 +14,8 @@ class GroupCreateScreen extends React.Component {
       additionalInfo: '',
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
+    await AsyncStorage.removeItem('loggedIn');
     // axios.get("").then(res=>{
     //   this.setState({groups: res.data});
     // })
