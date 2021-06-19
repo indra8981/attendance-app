@@ -8,7 +8,9 @@ import {
 import Constants from './constants';
 import io from 'socket.io-client';
 import Modal from 'react-native-modal';
-
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+import axios from './axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
@@ -22,7 +24,6 @@ import {
   Pressable,
   TouchableWithoutFeedback,
 } from 'react-native';
-import uuid from 'uuid';
 class chatScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -74,8 +75,9 @@ class chatScreen extends React.Component {
 
   }
 
-  componentDidMount() {
-    this.setState({user: this.props.route.params.userId});
+  async componentDidMount() {
+    let chats = await axios.get(`/chats?groupId=${this.props.route.params.group.id}`)
+    this.setState({user: this.props.route.params.userId, messages: chats.data.chats});
     console.log(this.props.route.params.group);
     this.socket.emit('login', {
       name: this.props.route.params.userId,
@@ -100,8 +102,7 @@ class chatScreen extends React.Component {
   }
 
   handleSend(newMessage = []) {
-    const x = JSON.stringify(newMessage);
-    this.setState({test: JSON.parse(x)});
+    const x = JSON.stringify(newMessage[0]);
     this.socket.emit('sendMessage', newMessage);
     this.setState({
       messages: GiftedChat.append(this.state.messages, newMessage),
@@ -150,7 +151,7 @@ class chatScreen extends React.Component {
   }
 
   createCard() {
-    const id = uuid.v4();
+    const id = uuidv4();
     const createdAt = new Date();
     this.setState({attendanceCardId: id, attendanceCardCreatedTime: createdAt});
     this.handleSend([
