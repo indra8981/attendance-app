@@ -19,13 +19,15 @@ class GroupListScreen extends React.Component {
       groups: [],
       renderCreateButton: false,
       userEmail: null,
+      userName: null,
     };
   }
   async componentDidMount() {
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
-    this.setState({userEmail: userId});
+    const userName = value['name'];
+    this.setState({userEmail: userId, userName: userName});
     axios
       .get(`/group/listGroup?userId=${userId}`)
       .then(res => {
@@ -45,6 +47,7 @@ class GroupListScreen extends React.Component {
   }
 
   renderList() {
+    console.log(this.state)
     var lists = [];
     for (var i = 0; i < this.state.groups.length; i++) {
       const grp = this.state.groups[i];
@@ -55,6 +58,7 @@ class GroupListScreen extends React.Component {
             this.props.navigation.navigate('chatScreen', {
               group: grp,
               userId: this.state.userEmail,
+              userName: this.state.userName,
             }); //go to chatScreen.js
             //await AsyncStorage.removeItem('loggedIn');
           }}

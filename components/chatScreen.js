@@ -33,6 +33,7 @@ class chatScreen extends React.Component {
     this.state = {
       isModalVisible : false,
       user: null,
+      userName: null,
       attendanceCardId: null,
       attendanceCardCreatedTime: null,
       timer: 10,
@@ -77,7 +78,8 @@ class chatScreen extends React.Component {
 
   async componentDidMount() {
     let chats = await axios.get(`/chats?groupId=${this.props.route.params.group.id}`)
-    this.setState({user: this.props.route.params.userId, messages: chats.data.chats});
+    this.setState({user: this.props.route.params.userId, userName: this.props.route.params.userName, messages: chats.data.chats});
+    console.log("Hola: ", this.state)
     console.log(this.props.route.params.group);
     this.socket.emit('login', {
       name: this.props.route.params.userId,
@@ -159,7 +161,7 @@ class chatScreen extends React.Component {
         _id: id,
         createdAt: createdAt,
         customView: 'attendance',
-        user: {_id: this.state.user},
+        user: {_id: this.state.user, name: this.state.userName},
       },
     ]);
   }
@@ -234,7 +236,7 @@ class chatScreen extends React.Component {
 
         <GiftedChat
           renderInputToolbar={props =>
-            this.props.route.params.group.createdByUser ===
+            this.props.route.params.group.createdByUser !=
             this.props.route.params.userId ? (
               <View style={{flexDirection: 'row', flex: 1}}>
                 <View style={{flex: 1}}>
@@ -248,7 +250,7 @@ class chatScreen extends React.Component {
           }
           messages={this.state.messages}
           onSend={newMessage => this.handleSend(newMessage)}
-          user={{_id: this.state.user}}
+          user={{_id: this.state.user, name: this.state.userName}}
           renderCustomView={hh => {
             if (hh.currentMessage.customView === 'attendance') {
               return (
@@ -269,6 +271,9 @@ class chatScreen extends React.Component {
                 wrapperStyle={{
                   right: {
                     backgroundColor: 'grey',
+                  },
+                  left: {
+                    backgroundColor: 'grey',  
                   },
                 }}
                 {...hh}
