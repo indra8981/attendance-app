@@ -92,44 +92,44 @@ class AttendanceChart extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <View>
-            <Table borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
-              <Row
-                data={state.tableHead}
-                widthArr={state.widthArr}
-                style={styles.header}
-                textStyle={styles.text}
-              />
-            </Table>
-            <ScrollView style={styles.dataWrapper}>
+          {this.renderCalendar()}
+          {this.state.startDate && this.state.endDate ? (
+            <ScrollView horizontal={true}> 
+            <View>
               <Table borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
-                {tableData.map((rowData, index) => (
-                  <Row
-                    key={index}
-                    data={rowData}
-                    widthArr={state.widthArr}
-                    style={[
-                      styles.row,
-                      index % 2 && {backgroundColor: '#F7F6E7'},
-                    ]}
-                    textStyle={styles.text}
-                  />
-                ))}
+                <Row
+                  data={state.tableHead}
+                  widthArr={state.widthArr}
+                  style={styles.header}
+                  textStyle={styles.text}
+                />
               </Table>
+              <ScrollView style={styles.dataWrapper}>
+                <Table borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
+                  {tableData.map((rowData, index) => (
+                    <Row
+                      key={index}
+                      data={rowData}
+                      widthArr={state.widthArr}
+                      style={[
+                        styles.row,
+                        index % 2 && {backgroundColor: '#F7F6E7'},
+                      ]}
+                      textStyle={styles.text}
+                    />
+                  ))}
+                </Table>
+              </ScrollView>
+            </View>
             </ScrollView>
-          </View>
+          ) : null}
         </ScrollView>
       </View>
     );
   }
 
   render() {
-    return (
-      <View style={{flex: 1, flexDirection: 'column'}}>
-        {this.renderCalendar()}
-        {this.state.startDate && this.state.endDate ? this.renderAttendanceChart(): null}
-      </View>
-    );
+    return this.renderAttendanceChart()
   }
 }
 
