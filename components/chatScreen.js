@@ -197,6 +197,12 @@ class chatScreen extends React.Component {
     }
   }
 
+  onStartAttendance() {
+    axios.get(`/attendance/start-attendance?groupId=${this.props.route.params.group.id}`);
+    this.createCard();
+    this.setState({isModalVisible: false});
+  }
+
   render() {
     return (
       <View style={{flex: 1}}>
@@ -223,7 +229,7 @@ class chatScreen extends React.Component {
                 <Pressable
                   style={styles.button}
                   onPress={() => {
-                    this.createCard(), this.setState({isModalVisible: false});
+                    this.onStartAttendance()
                   }}>
                   <Text style={styles.text}>Start Attendance</Text>
                 </Pressable>
