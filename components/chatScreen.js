@@ -318,6 +318,14 @@ class chatScreen extends React.Component {
     }
   }
 
+  onStartAttendance() {
+    axios.get(
+      `/attendance/start-attendance?groupId=${this.props.route.params.group.id}`,
+    );
+    this.createCard();
+    this.setState({isModalVisible: false});
+  }
+
   popUp() {
     const f = !this.state.isTopModalVisible;
     this.setState({isTopModalVisible: f});
@@ -329,7 +337,10 @@ class chatScreen extends React.Component {
         onPress={() => {
           this.setState({isTopModalVisible: false});
         }}>
-        <Modal isVisible={this.state.isTopModalVisible}>
+        <Modal
+          isVisible={this.state.isTopModalVisible}
+          animationIn="slideInRight"
+          animationOut="slideOutRight">
           <View
             style={{
               justifyContent: 'center',
