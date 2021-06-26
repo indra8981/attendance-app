@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput, Button} from 'react-native';
+import {View, TextInput, Button, Alert} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from './axios';
+
 class GroupCreateScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -14,12 +15,11 @@ class GroupCreateScreen extends React.Component {
       additionalInfo: '',
     };
   }
-  async componentDidMount() {
-    await AsyncStorage.removeItem('loggedIn');
-    // axios.get("").then(res=>{
-    //   this.setState({groups: res.data});
-    // })
-    global.ID = 5;
+
+  componentDidMount() {
+    this.props.navigation.setOptions({
+      title: 'Create new group',
+    });
   }
 
   async handleSubmit() {
@@ -47,6 +47,8 @@ class GroupCreateScreen extends React.Component {
     await axios.post('/group/inviteUsers', inviteUsers).then(response => {
       console.log(response.data);
     });
+    this.props.navigation.navigate('groupTabs');
+    Alert.alert('Group created successfully !');
   }
 
   render() {

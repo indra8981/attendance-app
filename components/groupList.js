@@ -5,12 +5,9 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Button,
-  Icon,
 } from 'react-native';
 import axios from './axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import chatScreen from './chatScreen';
 
 class GroupListScreen extends React.Component {
   constructor(props) {
@@ -43,11 +40,11 @@ class GroupListScreen extends React.Component {
   }
 
   buttonClickedHandler() {
-    this.props.navigation.navigate('calendar');
+    this.props.navigation.navigate('groupCreate');
   }
 
   renderList() {
-    console.log(this.state)
+    console.log(this.state);
     var lists = [];
     for (var i = 0; i < this.state.groups.length; i++) {
       const grp = this.state.groups[i];

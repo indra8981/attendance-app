@@ -9,28 +9,35 @@ class AttendanceStats extends Component {
       tableHead: ['Roll.No', 'Name', 'Present', 'Absent', '% age'],
       widthArr: [60, 300, 100, 100, 80],
       tableData: [],
-      startDate: null,
-      endDate: null,
-      startDateString: '',
-      endDateString: '',
+      startDate: '',
+      endDate: '',
       totalClasses: 0,
     };
   }
 
   componentDidMount() {
-    console.log("Hola1", this.props);
+    this.props.navigation.setOptions({
+      title: this.props.route.params.group.groupName + ' Attendance record',
+    });
     this.setState({
       tableData: this.props.route.params.tableData,
       totalClasses: this.props.route.params.totalClasses,
-      startDateString: this.props.route.params.startDate,
-      endDateString: this.props.route.params.endDate,
+      startDate: this.props.route.params.startDate,
+      endDate: this.props.route.params.endDate,
     });
   }
 
   renderAttendanceChart() {
-    console.log("Hola2", this.state.tableData)
     return (
       <View style={styles.container}>
+        <View>
+          <Text>Start Date : {this.state.startDate}</Text>
+          <Text>End Date : {this.state.endDate}</Text>
+          <Text>No of Classes : {this.state.totalClasses}</Text>
+          <Text>No of Students : {this.state.tableData.length}</Text>
+          <Text></Text>
+          <Text></Text>
+        </View>
         <ScrollView>
           <ScrollView horizontal={true}>
             <View>

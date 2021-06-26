@@ -1,13 +1,8 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, SafeAreaView, Text} from 'react-native';
-import {Table, Row} from 'react-native-table-component';
-
-//import CalendarPicker from the package we installed
+import {StyleSheet, View, SafeAreaView, Text} from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import axios from './axios';
 import {Button} from 'react-native-elements';
-import AttendanceStats from './attendanceStats';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Calendar extends Component {
   constructor(props) {
@@ -21,6 +16,12 @@ class Calendar extends Component {
       totalClasses: 0,
       buttonDisabled: true,
     };
+  }
+
+  componentDidMount() {
+    this.props.navigation.setOptions({
+      title: this.props.route.params.group.groupName,
+    });
   }
 
   renderCalendar() {
@@ -99,17 +100,14 @@ class Calendar extends Component {
   renderButton() {
     return (
       <Button
-        title="Outline button"
+        title="Get attendance record"
         type="outline"
         disabled={this.state.buttonDisabled}
         onPress={async () => {
           console.log('dhukechi');
           console.log(this.state);
-          console.log(
-            `/attendance/getAttendance?groupId=3&startDate=${this.state.startDate}&endDate=${this.state.endDate}`,
-          );
           const attendancePayload = {
-            groupId: '3',
+            groupId: this.props.route.params.group.id,
             startDate: this.state.startDate,
             endDate: this.state.endDate,
           };
@@ -120,11 +118,12 @@ class Calendar extends Component {
           console.log('Hola', response.data);
           console.log(response.data.data, response.data.totalClasses);
           console.log(this.state);
-          this.props.navigation.navigate("attendanceStats", {
+          this.props.navigation.navigate('attendanceStats', {
             tableData: response.data.data,
             totalClasses: response.data.totalClasses,
             startDate: this.state.startDateString,
-            endDate: this.state.endDateString
+            endDate: this.state.endDateString,
+            group: this.props.route.params.group,
           });
         }}
       />

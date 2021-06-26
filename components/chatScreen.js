@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  GiftedChat,
-  InputToolbar,
-  MessageText,
-  Bubble,
-} from 'react-native-gifted-chat';
+import {GiftedChat, InputToolbar, Bubble} from 'react-native-gifted-chat';
 import Constants from './constants';
 import io from 'socket.io-client';
 import Modal from 'react-native-modal';
@@ -12,23 +7,17 @@ import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import axios from './axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AWS from 'aws-sdk';
 import DocumentPicker from 'react-native-document-picker';
 import Video from 'react-native-video';
-// import VideoPlayer from 'react-native-video-controls';
-import VideoPlayer from 'react-native-video-player';
-
 import {
   StyleSheet,
   View,
   Text,
-  Button,
-  TextInput,
-  Alert,
   TouchableOpacity,
   Pressable,
   TouchableWithoutFeedback,
 } from 'react-native';
+
 class chatScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -91,6 +80,7 @@ class chatScreen extends React.Component {
           style={{marginRight: 17, marginTop: 4}}
         />
       ),
+      title: this.props.route.params.group.groupName,
     });
 
     let chats = await axios.get(
@@ -359,10 +349,12 @@ class chatScreen extends React.Component {
               <TouchableOpacity
                 style={styles.button1}
                 onPress={() => {
-                  this.props.navigation.navigate('groupTabs'),
-                    this.setState({isTopModalVisible: false});
+                  this.props.navigation.navigate('calendar', {
+                    group: this.props.route.params.group,
+                  });
+                  this.setState({isTopModalVisible: false});
                 }}>
-                <Text style={styles.text1}>STATS</Text>
+                <Text style={styles.text1}>Attendance Record</Text>
               </TouchableOpacity>
 
               <View>
