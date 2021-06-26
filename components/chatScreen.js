@@ -12,6 +12,11 @@ import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import axios from './axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AWS from 'aws-sdk';
+import DocumentPicker from 'react-native-document-picker';
+import Video from 'react-native-video';
+// import VideoPlayer from 'react-native-video-controls';
+import VideoPlayer from 'react-native-video-player';
 
 import {
   StyleSheet,
@@ -43,15 +48,17 @@ class chatScreen extends React.Component {
       test: null,
       currentTime: new Date(),
       messages: [
-        {
-          _id: '123456',
-          createdAt: new Date(),
-          text: 'Ok',
-          user: {
-            _id: 'a@a.com',
-            name: 'Soura Deep',
-          },
-        },
+        // {
+        //   _id: '123456',
+        //   createdAt: new Date(),
+        //   text: 'Ok',
+        //   user: {
+        //     _id: 'a@a.com',
+        //     name: 'Soura Deep',
+        //   },
+        //   image: 'http://192.168.31.61:9000/hola/test.jpg',
+        //   // video: 'http://192.168.31.61:9000/hola/VID-20210501-WA0001.mp4',
+        // },
       ],
     };
     // this.tick = this.tick.bind(this);
@@ -104,6 +111,107 @@ class chatScreen extends React.Component {
       name: this.props.route.params.userId,
       room: this.props.route.params.group.id,
     });
+  }
+
+  renderMessageVideo(props) {
+    const {currentMessage} = props;
+    console.log(props);
+    var styles = StyleSheet.create({
+      backgroundVideo: {
+        height: 200,
+        width: 200,
+      },
+    });
+    return (
+      <View style={{padding: 20}}>
+        <Video
+          source={{uri: currentMessage.video}}
+          style={styles.backgroundVideo}
+          resizeMode="contain"
+          pictureInPicture={true}
+          controls={true}
+          paused={true}
+        />
+      </View>
+    );
+  }
+
+  async sendImage() {
+    //Opening Document Picker for selection of one file
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+      const fileToUpload = res;
+      const data = new FormData();
+      data.append('file_attachment', fileToUpload);
+      let oo = await axios.post('/upload', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data; ',
+        },
+      });
+      const id = uuidv4();
+      const createdAt = new Date();
+      this.handleSend([
+        {
+          _id: id,
+          createdAt: createdAt,
+          image: oo.data.url,
+          user: {_id: this.state.user, name: this.state.userName},
+        },
+      ]);
+
+      //Setting the state to show single file attributes
+    } catch (err) {
+      //Handling any exception (If any)
+      if (DocumentPicker.isCancel(err)) {
+        //If user canceled the document selection
+        alert('Canceled from single doc picker');
+      } else {
+        //For Unknown Error
+        alert('Unknown Error: ' + JSON.stringify(err));
+        throw err;
+      }
+    }
+  }
+
+  async sendVideo() {
+    //Opening Document Picker for selection of one file
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.video],
+      });
+      const fileToUpload = res;
+      const data = new FormData();
+      data.append('file_attachment', fileToUpload);
+      let oo = await axios.post('/upload', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data; ',
+        },
+      });
+      const id = uuidv4();
+      const createdAt = new Date();
+      this.handleSend([
+        {
+          _id: id,
+          createdAt: createdAt,
+          video: oo.data.url,
+          user: {_id: this.state.user, name: this.state.userName},
+        },
+      ]);
+
+      //Setting the state to show single file attributes
+    } catch (err) {
+      //Handling any exception (If any)
+      if (DocumentPicker.isCancel(err)) {
+        //If user canceled the document selection
+        alert('Canceled from single doc picker');
+      } else {
+        //For Unknown Error
+        alert('Unknown Error: ' + JSON.stringify(err));
+        throw err;
+      }
+    }
   }
 
   handleSend(newMessage = []) {
@@ -197,6 +305,12 @@ class chatScreen extends React.Component {
     }
   }
 
+  onStartAttendance() {
+    axios.get(`/attendance/start-attendance?groupId=${this.props.route.params.group.id}`);
+    this.createCard();
+    this.setState({isModalVisible: false});
+  }
+
   render() {
     return (
       <View style={{flex: 1}}>
@@ -223,20 +337,24 @@ class chatScreen extends React.Component {
                 <Pressable
                   style={styles.button}
                   onPress={() => {
-                    this.createCard(), this.setState({isModalVisible: false});
+                    this.onStartAttendance()
                   }}>
                   <Text style={styles.text}>Start Attendance</Text>
                 </Pressable>
 
                 <View style={{marginTop: 20}}>
-                  <Pressable style={styles.button}>
-                    <Text style={styles.text}>FUTURE - 1</Text>
+                  <Pressable
+                    style={styles.button}
+                    onPress={() => this.sendImage()}>
+                    <Text style={styles.text}>Send Image</Text>
                   </Pressable>
                 </View>
 
                 <View style={{marginTop: 20}}>
-                  <Pressable style={styles.button}>
-                    <Text style={styles.text}>FUTURE - 2</Text>
+                  <Pressable
+                    style={styles.button}
+                    onPress={() => this.sendVideo()}>
+                    <Text style={styles.text}>Send Video</Text>
                   </Pressable>
                 </View>
 
@@ -271,6 +389,7 @@ class chatScreen extends React.Component {
               <View />
             )
           }
+          renderMessageVideo={props => this.renderMessageVideo(props)}
           messages={this.state.messages}
           onSend={newMessage => this.handleSend(newMessage)}
           user={{_id: this.state.user, name: this.state.userName}}
