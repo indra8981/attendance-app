@@ -43,7 +43,7 @@ class GroupListScreen extends React.Component {
   }
 
   buttonClickedHandler() {
-    this.props.navigation.navigate('groupCreate');
+    this.props.navigation.navigate('attendanceStats');
   }
 
   renderList() {

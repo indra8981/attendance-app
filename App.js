@@ -8,6 +8,9 @@ import GroupCreate from './components/groupCreate';
 import chatScreen from './components/chatScreen';
 import Modal from 'react-native-modal';
 import { HeaderBackButton } from '@react-navigation/stack';
+import ChatScreen from './components/chatScreen'
+import AttendanceStats from './components/attendanceStats'
+
 import axios from 'axios';
 import AttendanceChart from './components/attendanceChart';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -45,6 +48,7 @@ class App extends React.Component {
     const Stack = createStackNavigator();
 
     return (
+<<<<<<< Updated upstream
 
       <View style={{flex: 1}}>
 
@@ -122,6 +126,17 @@ class App extends React.Component {
         </NavigationContainer>
 
       </View>
+=======
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="login" component={LoginScreen} />
+          <Stack.Screen name="groupTabs" component={GroupTabs} />
+          <Stack.Screen name="groupCreate" component={GroupCreate} />
+          <Stack.Screen name="chatScreen" component={ChatScreen} />
+          <Stack.Screen name="attendanceStats" component={AttendanceStats} />
+        </Stack.Navigator>
+      </NavigationContainer>
+>>>>>>> Stashed changes
     );
   }
 }
