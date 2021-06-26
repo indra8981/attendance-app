@@ -7,9 +7,10 @@ import GroupTabs from './components/groupTabs';
 import GroupCreate from './components/groupCreate';
 import chatScreen from './components/chatScreen';
 import Modal from 'react-native-modal';
-import { HeaderBackButton } from '@react-navigation/stack';
-import ChatScreen from './components/chatScreen'
-import AttendanceStats from './components/attendanceStats'
+import {HeaderBackButton} from '@react-navigation/stack';
+import ChatScreen from './components/chatScreen';
+import AttendanceStats from './components/attendanceStats';
+import Calendar from './components/calendar'
 
 import axios from 'axios';
 import AttendanceChart from './components/attendanceChart';
@@ -26,9 +27,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-
 class App extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -37,21 +36,16 @@ class App extends React.Component {
     };
   }
 
-  popUp (navigation){
+  popUp(navigation) {
     const f = !this.state.isModalVisible;
     this.setState({isModalVisible: f, navigation: navigation});
-    
   }
-
 
   render() {
     const Stack = createStackNavigator();
 
     return (
-<<<<<<< Updated upstream
-
       <View style={{flex: 1}}>
-
         <TouchableWithoutFeedback
           onPress={() => {
             this.setState({isModalVisible: false});
@@ -67,7 +61,7 @@ class App extends React.Component {
                 style={{
                   backgroundColor: '#ffffff',
                   maxHeight: 180,
-             
+
                   flex: 1,
                   marginBottom: 450,
                   marginLeft: 180,
@@ -75,7 +69,8 @@ class App extends React.Component {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    this.state.navigation.navigate("groupTabs"), this.setState({isModalVisible: false});
+                    this.state.navigation.navigate('groupTabs'),
+                      this.setState({isModalVisible: false});
                   }}>
                   <Text style={styles.text}>STATS</Text>
                 </TouchableOpacity>
@@ -86,9 +81,9 @@ class App extends React.Component {
                   </TouchableOpacity>
                 </View>
 
-                <View >
+                <View>
                   <TouchableOpacity
-                    activeOpacity = {0.2}
+                    activeOpacity={0.2}
                     style={styles.button}
                     onPress={() => this.setState({isModalVisible: false})}>
                     <Text style={styles.text}>CLOSE</Text>
@@ -99,44 +94,31 @@ class App extends React.Component {
           </Modal>
         </TouchableWithoutFeedback>
 
-
-
-
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="login" component={LoginScreen} />
             <Stack.Screen name="groupTabs" component={GroupTabs} />
             <Stack.Screen name="groupCreate" component={GroupCreate} />
-            <Stack.Screen name="chatScreen" component={chatScreen} 
-
-            options={({ navigation }) => ({
-              headerRight: (props) => (
-                <Icon
-                  name="list"
-                  size={30}
-                  color="black"
-                  onPress={() => this.popUp(navigation)}
-                  style = {{marginRight: 17, marginTop: 4}}
-                />
-              ),
-            })}
-        
+            <Stack.Screen name="attendanceStats" component={AttendanceStats} />
+            <Stack.Screen name="calendar" component={Calendar} />
+            <Stack.Screen
+              name="chatScreen"
+              component={chatScreen}
+              options={({navigation}) => ({
+                headerRight: props => (
+                  <Icon
+                    name="list"
+                    size={30}
+                    color="black"
+                    onPress={() => this.popUp(navigation)}
+                    style={{marginRight: 17, marginTop: 4}}
+                  />
+                ),
+              })}
             />
           </Stack.Navigator>
         </NavigationContainer>
-
       </View>
-=======
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="login" component={LoginScreen} />
-          <Stack.Screen name="groupTabs" component={GroupTabs} />
-          <Stack.Screen name="groupCreate" component={GroupCreate} />
-          <Stack.Screen name="chatScreen" component={ChatScreen} />
-          <Stack.Screen name="attendanceStats" component={AttendanceStats} />
-        </Stack.Navigator>
-      </NavigationContainer>
->>>>>>> Stashed changes
     );
   }
 }
@@ -144,10 +126,9 @@ class App extends React.Component {
 export default App;
 
 const styles = StyleSheet.create({
-  
   button: {
     padding: 15,
-    width: "100%",
+    width: '100%',
     backgroundColor: 'transparent',
   },
   text: {
@@ -157,4 +138,3 @@ const styles = StyleSheet.create({
     color: 'black',
   },
 });
-
