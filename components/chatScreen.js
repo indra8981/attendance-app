@@ -37,6 +37,7 @@ class chatScreen extends React.Component {
     });
     this.state = {
       isModalVisible: false,
+      isTopModalVisible: false,
       user: null,
       groupType: null,
       userName: null,
@@ -80,6 +81,18 @@ class chatScreen extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.navigation.setOptions({
+      headerRight: props => (
+        <Icon
+          name="list"
+          size={30}
+          color="black"
+          onPress={() => this.popUp()}
+          style={{marginRight: 17, marginTop: 4}}
+        />
+      ),
+    });
+
     let chats = await axios.get(
       `/chats?groupId=${this.props.route.params.group.id}`,
     );
@@ -306,69 +319,139 @@ class chatScreen extends React.Component {
   }
 
   onStartAttendance() {
-    axios.get(`/attendance/start-attendance?groupId=${this.props.route.params.group.id}`);
+    axios.get(
+      `/attendance/start-attendance?groupId=${this.props.route.params.group.id}`,
+    );
     this.createCard();
     this.setState({isModalVisible: false});
+  }
+
+  popUp() {
+    const f = !this.state.isTopModalVisible;
+    this.setState({isTopModalVisible: f});
+  }
+
+  TopModal() {
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          this.setState({isTopModalVisible: false});
+        }}>
+        <Modal
+          isVisible={this.state.isTopModalVisible}
+          animationIn="slideInRight"
+          animationOut="slideOutRight">
+          <View
+            style={{
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              flex: 1,
+            }}>
+            <View
+              style={{
+                backgroundColor: '#ffffff',
+                maxHeight: 180,
+
+                flex: 1,
+                marginBottom: 450,
+                marginLeft: 180,
+              }}>
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={() => {
+                  this.props.navigation.navigate('groupTabs'),
+                    this.setState({isTopModalVisible: false});
+                }}>
+                <Text style={styles.text1}>STATS</Text>
+              </TouchableOpacity>
+
+              <View>
+                <TouchableOpacity style={styles.button1}>
+                  <Text style={styles.text1}>Decide - 1</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View>
+                <TouchableOpacity
+                  activeOpacity={0.2}
+                  style={styles.button1}
+                  onPress={() => this.setState({isTopModalVisible: false})}>
+                  <Text style={styles.text1}>CLOSE</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </TouchableWithoutFeedback>
+    );
+  }
+
+  AttachmentModal() {
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          this.setState({isModalVisible: false});
+        }}>
+        <Modal isVisible={this.state.isModalVisible}>
+          <View
+            style={{
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              flex: 1,
+            }}>
+            <View
+              style={{
+                backgroundColor: '#ffffff',
+                margin: 50,
+                maxHeight: 250,
+                padding: 40,
+                borderRadius: 20,
+                flex: 1,
+              }}>
+              <Pressable
+                style={styles.button}
+                onPress={() => {
+                  this.createCard(), this.setState({isModalVisible: false});
+                }}>
+                <Text style={styles.text}>Start Attendance</Text>
+              </Pressable>
+
+              <View style={{marginTop: 20}}>
+                <Pressable
+                  style={styles.button}
+                  onPress={() => this.sendImage()}>
+                  <Text style={styles.text}>Send Image</Text>
+                </Pressable>
+              </View>
+
+              <View style={{marginTop: 20}}>
+                <Pressable
+                  style={styles.button}
+                  onPress={() => this.sendVideo()}>
+                  <Text style={styles.text}>Send Video</Text>
+                </Pressable>
+              </View>
+
+              <View style={{marginTop: 20}}>
+                <Pressable
+                  style={styles.button}
+                  onPress={() => this.setState({isModalVisible: false})}>
+                  <Text style={styles.text}>CLOSE</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </TouchableWithoutFeedback>
+    );
   }
 
   render() {
     return (
       <View style={{flex: 1}}>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            this.setState({isModalVisible: false});
-          }}>
-          <Modal isVisible={this.state.isModalVisible}>
-            <View
-              style={{
-                justifyContent: 'center',
-                backgroundColor: 'transparent',
-                flex: 1,
-              }}>
-              <View
-                style={{
-                  backgroundColor: '#ffffff',
-                  margin: 50,
-                  maxHeight: 250,
-                  padding: 40,
-                  borderRadius: 20,
-                  flex: 1,
-                }}>
-                <Pressable
-                  style={styles.button}
-                  onPress={() => {
-                    this.onStartAttendance()
-                  }}>
-                  <Text style={styles.text}>Start Attendance</Text>
-                </Pressable>
+        {this.TopModal()}
 
-                <View style={{marginTop: 20}}>
-                  <Pressable
-                    style={styles.button}
-                    onPress={() => this.sendImage()}>
-                    <Text style={styles.text}>Send Image</Text>
-                  </Pressable>
-                </View>
-
-                <View style={{marginTop: 20}}>
-                  <Pressable
-                    style={styles.button}
-                    onPress={() => this.sendVideo()}>
-                    <Text style={styles.text}>Send Video</Text>
-                  </Pressable>
-                </View>
-
-                <View style={{marginTop: 20}}>
-                  <Pressable
-                    style={styles.button}
-                    onPress={() => this.setState({isModalVisible: false})}>
-                    <Text style={styles.text}>CLOSE</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </View>
-          </Modal>
-        </TouchableWithoutFeedback>
+        {this.AttachmentModal()}
 
         <GiftedChat
           renderInputToolbar={props =>
@@ -445,6 +528,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.25,
     color: 'white',
+  },
+
+  button1: {
+    padding: 15,
+    width: '100%',
+    backgroundColor: 'transparent',
+  },
+  text1: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'black',
   },
 });
 
