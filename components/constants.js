@@ -1,3 +1,3 @@
 module.exports = {
-  BACKEND_ENDPOINT: 'http://192.168.0.104:8000',
+  BACKEND_ENDPOINT: 'http://25b4d027d6d9.ngrok.io',
 };

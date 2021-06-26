@@ -5,9 +5,12 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import axios from './axios';
+import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class GroupListScreen extends React.Component {
   constructor(props) {
@@ -17,9 +20,24 @@ class GroupListScreen extends React.Component {
       renderCreateButton: false,
       userEmail: null,
       userName: null,
+      isTopModalVisible: false,
     };
   }
   async componentDidMount() {
+
+    this.props.navigation.setOptions({
+      headerRight: props => (
+        <Icon
+          name="list"
+          size={30}
+          color="black"
+          onPress={() => this.popUp()}
+          style={{marginRight: 17, marginTop: 4}}
+        />
+      ),
+    });
+
+
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
@@ -41,6 +59,53 @@ class GroupListScreen extends React.Component {
 
   buttonClickedHandler() {
     this.props.navigation.navigate('groupCreate');
+  }
+
+  popUp() {
+    const f = !this.state.isTopModalVisible;
+    this.setState({isTopModalVisible: f});
+  }
+
+  TopModal() {
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          this.setState({isTopModalVisible: false});
+        }}>
+        <Modal
+          isVisible={this.state.isTopModalVisible}
+          animationIn="slideInRight"
+          animationOut="slideOutRight">
+          <View
+            style={{
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              flex: 1,
+            }}>
+            <View
+              style={{
+                backgroundColor: '#ffffff',
+                maxHeight: 50,
+
+                flex: 1,
+                marginBottom: 560,
+                marginLeft: 180,
+              }}>
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={async () => {
+                  await AsyncStorage.removeItem('loggedIn');
+                  this.props.navigation.navigate('login');
+                  this.setState({isTopModalVisible: false});
+                }}>
+                <Text style={styles.text1}>Log Out</Text>
+              </TouchableOpacity>
+
+            </View>
+          </View>
+        </Modal>
+      </TouchableWithoutFeedback>
+    );
   }
 
   renderList() {
@@ -78,6 +143,8 @@ class GroupListScreen extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
+        {this.TopModal()}
+
         <ScrollView>{this.renderList()}</ScrollView>
         <TouchableOpacity
           onPress={() => this.buttonClickedHandler()}
@@ -117,5 +184,17 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: 'black',
     borderRadius: 10,
+  },
+
+  button1: {
+    padding: 15,
+    width: '100%',
+    backgroundColor: 'transparent',
+  },
+  text1: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'black',
   },
 });
