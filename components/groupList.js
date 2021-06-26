@@ -24,7 +24,6 @@ class GroupListScreen extends React.Component {
     };
   }
   async componentDidMount() {
-
     this.props.navigation.setOptions({
       headerRight: props => (
         <Icon
@@ -35,8 +34,9 @@ class GroupListScreen extends React.Component {
           style={{marginRight: 17, marginTop: 4}}
         />
       ),
+      headerLeft: null,
+      title: 'Groups',
     });
-
 
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
@@ -100,7 +100,6 @@ class GroupListScreen extends React.Component {
                 }}>
                 <Text style={styles.text1}>Log Out</Text>
               </TouchableOpacity>
-
             </View>
           </View>
         </Modal>

@@ -14,8 +14,6 @@ class LoginScreen extends React.Component {
   }
   async updateLocation(value) {
     value = JSON.parse(value);
-  
-    
 
     Geolocation.getCurrentPosition(
       info => {
@@ -25,7 +23,6 @@ class LoginScreen extends React.Component {
           longitude: info.coords.longitude,
           timestamp: info.timestamp,
         };
-        console.log("INFO -> ", info);
         axios
           .post('/users/updateLocation', geolocationInstance)
           .then(response => {
@@ -38,25 +35,25 @@ class LoginScreen extends React.Component {
       {
         enableHighAccuracy: true,
         distanceFilter: 4,
-        enableHighAccuracy: true, timeout: 15000, maximumAge: 10000
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
       },
     );
-
-
-
-
   }
-  async componentDidMount() { 
-
-    const email = this.props.route.params.email;
-    const password = this.props.route.params.password;
-
-    if(email && password){
-      this.setState({email: email, password: password});
+  async componentDidMount() {
+    try {
+      const email = this.props.route.params.email;
+      const password = this.props.route.params.password;
+      if (email != undefined && password != undefined) {
+        console.log(email, password);
+        this.setState({email: email, password: password});
+      }
+    } catch (err) {
+      console.log('Massive error', err);
     }
 
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-      console.log("ENTERED -----------")
       const value = await AsyncStorage.getItem('loggedIn');
       if (value) {
         await this.updateLocation(value);
@@ -64,7 +61,7 @@ class LoginScreen extends React.Component {
         return;
       }
     });
-    
+
     const value = await AsyncStorage.getItem('loggedIn');
     if (value) {
       await this.updateLocation(value);
@@ -76,13 +73,12 @@ class LoginScreen extends React.Component {
     this._unsubscribe();
   }
 
-
   async requestPermission() {
     try {
       const granted = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-      ]).then((result) => {
+      ]).then(result => {
         console.log(result);
         if (
           result['android.permission.ACCESS_COARSE_LOCATION'] &&
@@ -95,10 +91,8 @@ class LoginScreen extends React.Component {
     } catch (err) {
       console.warn(err);
       return false;
-      }
     }
-
-
+  }
 
   async onLogin() {
     axios
@@ -110,57 +104,7 @@ class LoginScreen extends React.Component {
 
           const permission = await this.requestPermission();
 
-          if(permission){
-                  Geolocation.getCurrentPosition(
-                    info => {
-                      const geolocationInstance = {
-                        userEmail: res.data.email,
-                        latitude: info.coords.latitude,
-                        longitude: info.coords.longitude,
-                        timestamp: info.timestamp,
-                      };
-                      console.log("INFO -> ", info);
-                      axios
-                        .post('/users/updateLocation', geolocationInstance)
-                        .then(response => {
-                          console.log('Hola', response);
-                        });
-                    },
-                    err => {
-                      console.log(err);
-                    },
-                    {
-                      enableHighAccuracy: true,
-                      distanceFilter: 4,
-                      enableHighAccuracy: true, timeout: 15000, maximumAge: 10000
-                    },
-                  );
-        
-                  Geolocation.watchPosition(
-                    info => {
-                      const geolocationInstance = {
-                        userEmail: res.data.email,
-                        latitude: info.coords.latitude,
-                        longitude: info.coords.longitude,
-                        timestamp: info.timestamp,
-                      };
-                      axios
-                        .post('/users/updateLocation', geolocationInstance)
-                        .then(response => {
-                          console.log('Hola', response);
-                        });
-                    },
-                    err => {
-                      console.log(err);
-                    },
-                    {
-                      enableHighAccuracy: true,
-                      distanceFilter: 4,
-                      enableHighAccuracy: true, timeout: 15000, maximumAge: 10000
-                    },
-                  );
-          }else{
-
+          if (permission) {
             Geolocation.getCurrentPosition(
               info => {
                 const geolocationInstance = {
@@ -169,7 +113,60 @@ class LoginScreen extends React.Component {
                   longitude: info.coords.longitude,
                   timestamp: info.timestamp,
                 };
-                console.log("INFO -> ", info);
+                console.log('INFO -> ', info);
+                axios
+                  .post('/users/updateLocation', geolocationInstance)
+                  .then(response => {
+                    console.log('Hola', response);
+                  });
+              },
+              err => {
+                console.log(err);
+              },
+              {
+                enableHighAccuracy: true,
+                distanceFilter: 4,
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 10000,
+              },
+            );
+
+            Geolocation.watchPosition(
+              info => {
+                const geolocationInstance = {
+                  userEmail: res.data.email,
+                  latitude: info.coords.latitude,
+                  longitude: info.coords.longitude,
+                  timestamp: info.timestamp,
+                };
+                axios
+                  .post('/users/updateLocation', geolocationInstance)
+                  .then(response => {
+                    console.log('Hola', response);
+                  });
+              },
+              err => {
+                console.log(err);
+              },
+              {
+                enableHighAccuracy: true,
+                distanceFilter: 4,
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 10000,
+              },
+            );
+          } else {
+            Geolocation.getCurrentPosition(
+              info => {
+                const geolocationInstance = {
+                  userEmail: res.data.email,
+                  latitude: info.coords.latitude,
+                  longitude: info.coords.longitude,
+                  timestamp: info.timestamp,
+                };
+                console.log('INFO -> ', info);
                 axios
                   .post('/users/updateLocation', geolocationInstance)
                   .then(response => {
@@ -184,7 +181,7 @@ class LoginScreen extends React.Component {
                 distanceFilter: 4,
               },
             );
-  
+
             Geolocation.watchPosition(
               info => {
                 const geolocationInstance = {
@@ -207,7 +204,6 @@ class LoginScreen extends React.Component {
                 distanceFilter: 4,
               },
             );
-
           }
 
           this.props.navigation.navigate('groupTabs');
@@ -256,13 +252,11 @@ class LoginScreen extends React.Component {
           }}>
           Don't have an account?{' '}
           <Text
-            style = {{color : 'blue', textDecorationLine: 'underline'}}
-            onPress={ () => this.props.navigation.navigate('signup') }
-          >
-          Sign Up
+            style={{color: 'blue', textDecorationLine: 'underline'}}
+            onPress={() => this.props.navigation.navigate('signup')}>
+            Sign Up
           </Text>
         </Text>
-
       </View>
     );
   }

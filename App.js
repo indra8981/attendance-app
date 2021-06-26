@@ -17,8 +17,8 @@ class App extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="signup" component={SignUpScreen} />
           <Stack.Screen name="login" component={LoginScreen} />
+          <Stack.Screen name="signup" component={SignUpScreen} />
           <Stack.Screen name="groupTabs" component={GroupTabs} />
           <Stack.Screen name="groupCreate" component={GroupCreate} />
           <Stack.Screen name="chatScreen" component={ChatScreen} />
