@@ -360,7 +360,7 @@ class chatScreen extends React.Component {
                 style={styles.button1}
                 onPress={() => {
                   this.props.navigation.navigate('groupTabs'),
-                    this.setState({isTopModalVisible: false});
+                  this.setState({isTopModalVisible: false});
                 }}>
                 <Text style={styles.text1}>STATS</Text>
               </TouchableOpacity>

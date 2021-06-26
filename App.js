@@ -6,6 +6,7 @@ import LoginScreen from './components/login';
 import GroupTabs from './components/groupTabs';
 import GroupCreate from './components/groupCreate';
 import chatScreen from './components/chatScreen';
+import SignUpScreen from './components/signup';
 
 class App extends React.Component {
   render() {
@@ -14,6 +15,7 @@ class App extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
+          <Stack.Screen name="signup" component={SignUpScreen} />
           <Stack.Screen name="login" component={LoginScreen} />
           <Stack.Screen name="groupTabs" component={GroupTabs} />
           <Stack.Screen name="groupCreate" component={GroupCreate} />
