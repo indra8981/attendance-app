@@ -5,7 +5,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './components/login';
 import GroupTabs from './components/groupTabs';
 import GroupCreate from './components/groupCreate';
-import chatScreen from './components/chatScreen';
+import ChatScreen from './components/chatScreen';
+import AttendanceStats from './components/attendanceStats';
+import Calendar from './components/calendar';
 
 class App extends React.Component {
   render() {
@@ -17,7 +19,9 @@ class App extends React.Component {
           <Stack.Screen name="login" component={LoginScreen} />
           <Stack.Screen name="groupTabs" component={GroupTabs} />
           <Stack.Screen name="groupCreate" component={GroupCreate} />
-          <Stack.Screen name="chatScreen" component={chatScreen} />
+          <Stack.Screen name="chatScreen" component={ChatScreen} />
+          <Stack.Screen name="calendar" component={Calendar} />
+          <Stack.Screen name="attendanceStats" component={AttendanceStats} />
         </Stack.Navigator>
       </NavigationContainer>
     );
