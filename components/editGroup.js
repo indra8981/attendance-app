@@ -1,24 +1,40 @@
 import React from 'react';
-import {View, TextInput, Button, Alert} from 'react-native';
+import {View, TextInput, Button, Alert, ScrollView} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from './axios';
 
-class GroupCreateScreen extends React.Component {
+class GroupEditScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       groupName: '',
       groupDescription: '',
       groupType: 0,
-      invitedEmails: '',
+      alreadyInvitedUsers: [],
+      inviteUsers: '',
       additionalInfo: '',
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    console.log(
+      this.props.route.params.group,
+      this.props.route.params.group.groupName,
+    );
     this.props.navigation.setOptions({
-      title: 'Create new group',
+      title: 'Edit group: ' + this.props.route.params.group.groupName,
+    });
+    groupDetails = await axios.get(
+      `/group/getGroupDetails?groupId=${this.props.route.params.group.id}`,
+    );
+
+    this.setState({
+      groupName: groupDetails.data.groupDetails.groupName,
+      groupDescription: groupDetails.data.groupDetails.groupDescription,
+      groupType: groupDetails.data.groupDetails.groupType,
+      alreadyInvitedUsers: groupDetails.data.groupDetails.invitedUsers,
+      additionalInfo: groupDetails.data.groupDetails.additionalInfo,
     });
   }
 
@@ -26,35 +42,30 @@ class GroupCreateScreen extends React.Component {
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
-    console.log(this.state);
+
     const group = {
+      groupId: this.props.route.params.group.id,
       groupName: this.state.groupName,
       groupDescription: this.state.groupDescription,
       groupType: this.state.groupType,
       createdByUser: userId,
       additionalInfo: this.state.additionalInfo,
     };
-    console.log(group);
-    var groupId = -1;
-    await axios.post('/group/createGroup', group).then(response => {
-      console.log(response.data);
-      groupId = response.data.insertId;
-      console.log(groupId);
-    });
+
+    await axios.post(`/group/updateGroupDetails`, group);
     const inviteUsers = {
-      emails: this.state.invitedEmails,
-      groupId: groupId,
+      emails: `${this.state.inviteUsers}`,
+      groupId: this.props.route.params.group.id,
     };
-    await axios.post('/group/inviteUsers', inviteUsers).then(response => {
-      console.log(response.data);
-    });
+    await axios.post('/group/inviteUsers', inviteUsers);
+
     this.props.navigation.navigate('groupTabs');
-    Alert.alert('Group created successfully !');
+    Alert.alert('Group Editted successfully !');
   }
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <ScrollView style={{flex: 1}}>
         <View>
           <TextInput
             placeholder="Name"
@@ -67,18 +78,27 @@ class GroupCreateScreen extends React.Component {
             value={this.state.groupDescription}
           />
           <Picker
-            placeholder="Select group type"
+            placeholder="Group type"
             selectedValue={this.state.groupType}
             onValueChange={itemValue => this.setState({groupType: itemValue})}>
             <Picker.Item label="General Group" value={0} />
             <Picker.Item label="Classroom" value={1} />
           </Picker>
           <TextInput
-            placeholder="Invited Emails"
+            placeholder="Already Invited Users"
+            multiline={true}
+            onChangeText={alreadyInvitedUsers =>
+              this.setState({alreadyInvitedUsers})
+            }
+            value={`${this.state.alreadyInvitedUsers}`}
+            editable={false}
+          />
+          <TextInput
+            placeholder="Invite More Users"
             multiline={true}
             numberOfLines={10}
-            onChangeText={invitedEmails => this.setState({invitedEmails})}
-            value={this.state.invitedEmails}
+            onChangeText={inviteUsers => this.setState({inviteUsers})}
+            value={this.state.inviteUsers}
           />
           <TextInput
             placeholder="Additional Information"
@@ -88,15 +108,15 @@ class GroupCreateScreen extends React.Component {
             value={this.state.additionalInfo}
           />
           <Button
-            title="Create"
-            onPress={() => {
-              this.handleSubmit();
+            title="Update Group Information"
+            onPress={async () => {
+              await this.handleSubmit();
             }}
           />
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
 
-export default GroupCreateScreen;
+export default GroupEditScreen;

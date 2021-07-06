@@ -1,3 +1,3 @@
 module.exports = {
-  BACKEND_ENDPOINT: 'http://25b4d027d6d9.ngrok.io',
-};
+  BACKEND_ENDPOINT: 'http://6b64458a92aa.ngrok.io'
+}

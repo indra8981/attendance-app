@@ -9,6 +9,7 @@ import SignUpScreen from './components/signup';
 import ChatScreen from './components/chatScreen';
 import AttendanceStats from './components/attendanceStats';
 import Calendar from './components/calendar';
+import GroupEditScreen from './components/editGroup'
 
 class App extends React.Component {
   render() {
@@ -23,6 +24,7 @@ class App extends React.Component {
           <Stack.Screen name="groupCreate" component={GroupCreate} />
           <Stack.Screen name="chatScreen" component={ChatScreen} />
           <Stack.Screen name="calendar" component={Calendar} />
+          <Stack.Screen name="editGroup" component={GroupEditScreen} />
           <Stack.Screen name="attendanceStats" component={AttendanceStats} />
         </Stack.Navigator>
       </NavigationContainer>
