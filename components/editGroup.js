@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TextInput, Button, Alert} from 'react-native';
+import {View, TextInput, Button, Alert, ScrollView} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from './axios';
@@ -18,20 +18,23 @@ class GroupEditScreen extends React.Component {
   }
 
   async componentDidMount() {
-    console.log(this.props.route.params.group, this.props.route.params.group.groupName);
+    console.log(
+      this.props.route.params.group,
+      this.props.route.params.group.groupName,
+    );
     this.props.navigation.setOptions({
-      title: 'Edit group: ' + this.props.route.params.group.groupName
+      title: 'Edit group: ' + this.props.route.params.group.groupName,
     });
     groupDetails = await axios.get(
       `/group/getGroupDetails?groupId=${this.props.route.params.group.id}`,
     );
-    console.log(groupDetails.data.groupDetails.invitedUsers)
+
     this.setState({
-      groupName: this.props.route.params.group.groupName,
-      groupDescription: this.props.route.params.group.groupDescription,
-      groupType: this.props.route.params.group.groupType,
+      groupName: groupDetails.data.groupDetails.groupName,
+      groupDescription: groupDetails.data.groupDetails.groupDescription,
+      groupType: groupDetails.data.groupDetails.groupType,
       alreadyInvitedUsers: groupDetails.data.groupDetails.invitedUsers,
-      additionalInfo: this.props.route.params.group.additionalInfo,
+      additionalInfo: groupDetails.data.groupDetails.additionalInfo,
     });
   }
 
@@ -39,32 +42,30 @@ class GroupEditScreen extends React.Component {
     var value = await AsyncStorage.getItem('loggedIn');
     value = JSON.parse(value);
     const userId = value['email'];
-    console.log(this.state);
+
     const group = {
+      groupId: this.props.route.params.group.id,
       groupName: this.state.groupName,
       groupDescription: this.state.groupDescription,
       groupType: this.state.groupType,
       createdByUser: userId,
       additionalInfo: this.state.additionalInfo,
     };
-    console.log("Hola", group);
-    await axios.post(`/group/updateGroupDetails`, group).then(response => {
-      console.log("Hola")
-    });
+
+    await axios.post(`/group/updateGroupDetails`, group);
     const inviteUsers = {
-      emails: this.state.invitedEmails,
+      emails: `${this.state.inviteUsers}`,
       groupId: this.props.route.params.group.id,
     };
-    await axios.post('/group/inviteUsers', inviteUsers).then(response => {
-      console.log(response.data);
-    });
+    await axios.post('/group/inviteUsers', inviteUsers);
+
     this.props.navigation.navigate('groupTabs');
-    Alert.alert('Group created successfully !');
+    Alert.alert('Group Editted successfully !');
   }
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <ScrollView style={{flex: 1}}>
         <View>
           <TextInput
             placeholder="Name"
@@ -113,7 +114,7 @@ class GroupEditScreen extends React.Component {
             }}
           />
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
