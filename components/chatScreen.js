@@ -408,7 +408,7 @@ class chatScreen extends React.Component {
               <Pressable
                 style={styles.button}
                 onPress={() => {
-                  this.createCard(), this.setState({isModalVisible: false});
+                  this.onStartAttendance();
                 }}>
                 <Text style={styles.text}>Start Attendance</Text>
               </Pressable>
