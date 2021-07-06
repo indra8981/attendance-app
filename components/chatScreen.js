@@ -357,11 +357,16 @@ class chatScreen extends React.Component {
                 <Text style={styles.text1}>Attendance Record</Text>
               </TouchableOpacity>
 
-              <View>
-                <TouchableOpacity style={styles.button1}>
-                  <Text style={styles.text1}>Decide - 1</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={() => {
+                  this.props.navigation.navigate('editGroup', {
+                    group: this.props.route.params.group,
+                  });
+                  this.setState({isTopModalVisible: false});
+                }}>
+                <Text style={styles.text1}>Edit group</Text>
+              </TouchableOpacity>
 
               <View>
                 <TouchableOpacity
